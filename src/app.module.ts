@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserController } from "./controllers/users/user/user.controller";
 import { UserService } from "./services/user.service";
@@ -17,6 +17,10 @@ import { SocketIoModule } from "./socket-io.module"; // Import the custom Socket
 import { MessagesService } from "./services/messages.service";
 import { SocketService } from "./services/socket.service";
 import { FriendGateway } from "./gateways/friend/friend.gateway";
+import { ApiKeyStrategy } from "./utils/apiKey.strategy";
+import { AuthMiddleware } from "./middlewares/auth.middleware";
+import { PassportModule } from "@nestjs/passport";
+import { AuthService } from "./services/auth.service";
 
 const config = { url: "http://localhost:8080", options: {} };
 
@@ -25,13 +29,14 @@ const uri =
 
 @Module({
   imports: [
-    MongooseModule.forRoot(uri, {dbName: "uc-db"}),
+    MongooseModule.forRoot(uri, { dbName: "uc-db" }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Group.name, schema: GroupSchema },
       { name: Message.name, schema: MessageSchema },
     ]),
     SocketIoModule.forRoot(config),
+    PassportModule
   ],
   controllers: [
     AuthController,
@@ -49,6 +54,12 @@ const uri =
     MessagesService,
     SocketService,
     FriendGateway,
+    ApiKeyStrategy,
+    AuthService
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes("");
+  }
+}
