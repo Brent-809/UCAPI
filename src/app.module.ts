@@ -21,6 +21,7 @@ import { ApiKeyStrategy } from "./utils/apiKey.strategy";
 import { AuthMiddleware } from "./middlewares/auth.middleware";
 import { PassportModule } from "@nestjs/passport";
 import { AuthService } from "./services/auth.service";
+import { ConfigModule } from '@nestjs/config';
 
 const config = { url: "http://localhost:8080", options: {} };
 
@@ -36,7 +37,8 @@ const uri =
       { name: Message.name, schema: MessageSchema },
     ]),
     SocketIoModule.forRoot(config),
-    PassportModule
+    PassportModule,
+    ConfigModule.forRoot()
   ],
   controllers: [
     AuthController,
