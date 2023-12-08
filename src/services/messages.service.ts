@@ -32,14 +32,18 @@ export class MessagesService {
   async createPersonal(
     content: string,
     sender: string,
-    userId: string
-  ): Promise<Message> {
-    const createdMessage = new this.messageModel({ content, sender, userId });
+    Receiver: string
+  ): Promise<PersonalMessage> {
+    const createdMessage = new this.personalMessage({
+      content,
+      sender,
+      Receiver,
+    });
     const newMessage = await createdMessage.save();
 
     const activeSocket = this.socketService.getActiveSocket();
     if (activeSocket) {
-      activeSocket.to(userId).emit("newMessage", newMessage);
+      activeSocket.to(Receiver).emit("newMessage", newMessage);
     }
 
     return newMessage;
