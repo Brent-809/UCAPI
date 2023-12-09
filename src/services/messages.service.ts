@@ -11,7 +11,7 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
     @InjectModel(Message.name) private personalMessage: Model<PersonalMessage>,
     private socketService: SocketService
-  ) {}
+  ) { }
 
   async create(
     content: string,
@@ -32,22 +32,23 @@ export class MessagesService {
   async createPersonal(
     content: string,
     sender: string,
-    Receiver: string
+    receiver: string
   ): Promise<PersonalMessage> {
     const createdMessage = new this.personalMessage({
       content,
       sender,
-      Receiver,
+      receiver, // Update the parameter name
     });
     const newMessage = await createdMessage.save();
 
     const activeSocket = this.socketService.getActiveSocket();
     if (activeSocket) {
-      activeSocket.to(Receiver).emit("newMessage", newMessage);
+      activeSocket.to(receiver).emit("newMessage", newMessage);
     }
 
     return newMessage;
   }
+
 
   async findAllByGroup(groupId: string): Promise<Message[]> {
     return this.messageModel.find({ groupId }).exec();

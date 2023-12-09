@@ -5,7 +5,7 @@ import { MessagesService } from '../../services/messages.service';
 export class MessagesController {
   constructor(
     private readonly messagesService: MessagesService,
-  ) {}
+  ) { }
 
   @Post(':groupId')
   async create(@Param('groupId') groupId: string, @Body() data: { content: string; sender: string }) {
@@ -15,11 +15,15 @@ export class MessagesController {
   }
 
   @Post('user/:userId')
-  async createPersonalMessage(@Param('userId') userId: string, @Body() data: { content: string; sender: string }) {
-    const { content, sender } = data;
+  async createPersonalMessage(
+    @Param('userId') userId: string,
+    @Body() data: { content: string; sender: string; receiver: string }
+  ) {
+    const { content, sender, receiver } = data;
 
-    return await this.messagesService.createPersonal(content, sender, userId);
+    return await this.messagesService.createPersonal(content, sender, receiver);
   }
+
 
   @Get(':groupId')
   async findAll(@Param('groupId') groupId: string) {
