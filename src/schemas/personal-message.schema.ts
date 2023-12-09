@@ -16,4 +16,4 @@ export class PersonalMessage extends Document {
   timestamp: Date;
 }
 
-export const MessageSchema = SchemaFactory.createForClass(PersonalMessage);
+export const PersonalMessageSchema = SchemaFactory.createForClass(PersonalMessage);

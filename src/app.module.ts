@@ -22,6 +22,7 @@ import { AuthMiddleware } from "./middlewares/auth.middleware";
 import { PassportModule } from "@nestjs/passport";
 import { AuthService } from "./services/auth.service";
 import { ConfigModule } from '@nestjs/config';
+import { PersonalMessage, PersonalMessageSchema } from "./schemas/personal-message.schema";
 
 const config = { url: "http://localhost:8080", options: {} };
 
@@ -35,6 +36,7 @@ const uri =
       { name: User.name, schema: UserSchema },
       { name: Group.name, schema: GroupSchema },
       { name: Message.name, schema: MessageSchema },
+      { name: PersonalMessage.name, schema: PersonalMessageSchema },
     ]),
     SocketIoModule.forRoot(config),
     PassportModule,
